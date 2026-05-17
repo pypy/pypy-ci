@@ -29,7 +29,7 @@ under `docker/` change.
 
 ```sh
 docker build --pull -t buildworker_x86_64 \
-  --build-arg BUILDSLAVE_UID=$(id -u) \
+  --build-arg BUILDWORKER_UID=$(id -u) \
   -f docker/Dockerfile docker
 ```
 

@@ -2,7 +2,7 @@
 #
 # Build:
 #   docker build --pull -t buildworker_x86_64 \
-#     --build-arg BUILDSLAVE_UID=1001 \
+#     --build-arg BUILDWORKER_UID=1001 \
 #     -f docker/Dockerfile docker
 #
 # Run interactively:
@@ -52,8 +52,8 @@ ADD requirements.txt /root/requirements.txt
 RUN pypy -mpip install --require-hashes -r /root/requirements.txt
 
 # Define a user
-ARG BUILDSLAVE_UID=1001
+ARG BUILDWORKER_UID=1001
 ARG PARALLEL_BUILDS=4
-RUN adduser buildworker --uid=$BUILDSLAVE_UID
+RUN adduser buildworker --uid=$BUILDWORKER_UID
 RUN echo parallel_runs=$PARALLEL_BUILDS > /home/buildworker/machine_cfg.py
 ENV PYPY_LOCALBASE=/usr/local
