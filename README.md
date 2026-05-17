@@ -10,9 +10,9 @@ under `docker/` change.
 
 | Image | Arch | Runner |
 |---|---|---|
-| `ghcr.io/pypy/pypy/buildslave_x86_64` | x86-64 | `ubuntu-latest` |
-| `ghcr.io/pypy/pypy/buildslave_i686` | x86-32 | `ubuntu-latest` |
-| `ghcr.io/pypy/pypy/buildslave_aarch64` | aarch64 | `ubuntu-24.04-arm` |
+| `ghcr.io/pypy/pypy/buildworker_x86_64` | x86-64 | `ubuntu-latest` |
+| `ghcr.io/pypy/pypy/buildworker_i686` | x86-32 | `ubuntu-latest` |
+| `ghcr.io/pypy/pypy/buildworker_aarch64` | aarch64 | `ubuntu-24.04-arm` |
 
 ### What's in the image
 
@@ -28,7 +28,7 @@ under `docker/` change.
 ### Build locally
 
 ```sh
-docker build --pull -t buildslave_x86_64 \
+docker build --pull -t buildworker_x86_64 \
   --build-arg BUILDSLAVE_UID=$(id -u) \
   -f docker/Dockerfile docker
 ```
@@ -36,7 +36,7 @@ docker build --pull -t buildslave_x86_64 \
 Run interactively against a PyPy checkout:
 
 ```sh
-docker run -it --rm -v /path/to/pypy:/build_dir buildslave_x86_64 /bin/bash
+docker run -it --rm -v /path/to/pypy:/build_dir buildworker_x86_64 /bin/bash
 ```
 
 ### Updating dependencies

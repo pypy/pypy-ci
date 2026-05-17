@@ -1,12 +1,12 @@
 # Dockerfile based on manylinux_2_28_x86_64 (AlmaLinux 8, glibc 2.28)
 #
 # Build:
-#   docker build --pull -t buildslave_x86_64 \
+#   docker build --pull -t buildworker_x86_64 \
 #     --build-arg BUILDSLAVE_UID=1001 \
 #     -f docker/Dockerfile docker
 #
 # Run interactively:
-#   docker run -it --rm -v$(pwd):/build_dir buildslave_x86_64 /bin/bash
+#   docker run -it --rm -v$(pwd):/build_dir buildworker_x86_64 /bin/bash
 
 FROM quay.io/pypa/manylinux_2_28_x86_64@sha256:fd3ed4ce9cc68ccd5cd7dcad33a37515021429b7aac756c894fced3964931463
 WORKDIR /root
@@ -54,6 +54,6 @@ RUN pypy -mpip install --require-hashes -r /root/requirements.txt
 # Define a user
 ARG BUILDSLAVE_UID=1001
 ARG PARALLEL_BUILDS=4
-RUN adduser buildslave --uid=$BUILDSLAVE_UID
-RUN echo parallel_runs=$PARALLEL_BUILDS > /home/buildslave/machine_cfg.py
+RUN adduser buildworker --uid=$BUILDSLAVE_UID
+RUN echo parallel_runs=$PARALLEL_BUILDS > /home/buildworker/machine_cfg.py
 ENV PYPY_LOCALBASE=/usr/local

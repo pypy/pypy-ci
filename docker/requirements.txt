@@ -1,5 +1,4 @@
 # Generated with pip download --no-deps; install with pip install --require-hashes -r requirements.txt
-# Top-level: pytest hypothesis==4.42 mercurial==6.1 virtualenv pexpect vmprof automat==20.2
 # cffi is omitted: PyPy 2.7 ships its own cffi built-in
 atomicwrites==1.4.1 \
     --hash=sha256:81b2c9071a49367a7f770170e5eec8cb66567cfbbc8c73d20ce5ca4a8d71cf11
@@ -29,8 +28,8 @@ filelock==3.2.1 \
     --hash=sha256:7f07b08d731907441ff40d0c5b81f9512cd968842e0b6264c8bd18a8ce877760
 funcsigs==1.0.2 \
     --hash=sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca
-hypothesis==4.42.0 \
-    --hash=sha256:70a80436bdf844e2e9aaabe74100cc62b7e90c150fdd4dd864c64fcfc9bde273
+hypothesis==4.39.3 \
+    --hash=sha256:45cb2f7331330dfaaae7044cc29a881bb839518c285b594b4154bb12da204f0e
 idna==2.10 \
     --hash=sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0
 importlib_metadata==2.1.3 \
