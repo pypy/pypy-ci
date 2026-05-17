@@ -57,3 +57,4 @@ ARG PARALLEL_BUILDS=4
 RUN adduser buildworker --uid=$BUILDWORKER_UID
 RUN echo parallel_runs=$PARALLEL_BUILDS > /home/buildworker/machine_cfg.py
 ENV PYPY_LOCALBASE=/usr/local
+USER buildworker
