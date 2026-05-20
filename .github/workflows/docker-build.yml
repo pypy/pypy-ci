@@ -15,7 +15,39 @@ permissions:
   id-token: write
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      x86_64: ${{ steps.filter.outputs.x86_64 }}
+      i686: ${{ steps.filter.outputs.i686 }}
+      aarch64: ${{ steps.filter.outputs.aarch64 }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 2
+      - name: Detect changed Dockerfiles
+        id: filter
+        run: |
+          CHANGED=$(git diff --name-only HEAD^ HEAD)
+          # shared files that affect all images
+          SHARED=$(echo "$CHANGED" | grep -E '^docker/(install_|requirements\.txt)' || true)
+          WORKFLOW=$(echo "$CHANGED" | grep -c '\.github/workflows/docker-build\.yml' || true)
+
+          x86_64=false; i686=false; aarch64=false
+          if [ -n "$SHARED" ] || [ "$WORKFLOW" -gt 0 ]; then
+            x86_64=true; i686=true; aarch64=true
+          fi
+          echo "$CHANGED" | grep -q '^docker/Dockerfile$'        && x86_64=true  || true
+          echo "$CHANGED" | grep -q '^docker/Dockerfile\.i686$'  && i686=true    || true
+          echo "$CHANGED" | grep -q '^docker/Dockerfile\.aarch64$' && aarch64=true || true
+
+          echo "x86_64=$x86_64"   >> $GITHUB_OUTPUT
+          echo "i686=$i686"       >> $GITHUB_OUTPUT
+          echo "aarch64=$aarch64" >> $GITHUB_OUTPUT
+
   build-x86_64:
+    needs: changes
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.x86_64 == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -61,6 +93,8 @@ jobs:
           push-to-registry: true
 
   build-i686:
+    needs: changes
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.i686 == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -110,6 +144,8 @@ jobs:
           push-to-registry: true
 
   build-aarch64:
+    needs: changes
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.aarch64 == 'true' }}
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
