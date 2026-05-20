@@ -21,7 +21,6 @@ RUN yum install -y \
     openssl3-devel \
     gc-devel \
     ncurses-devel \
-    libunwind-devel \
     perl-IPC-Cmd perl-Digest-SHA
 
 RUN yum clean packages
