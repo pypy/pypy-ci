@@ -1,0 +1,61 @@
+# Dockerfile based on manylinux_2_28_i686 (AlmaLinux 8, glibc 2.28, 32-bit)
+#
+# Build:
+#   docker build --pull -t buildworker_i686 \
+#     --build-arg BUILDWORKER_UID=1001 \
+#     -f docker/Dockerfile.i686 docker
+#
+# Run interactively:
+#   docker run -it --rm -v$(pwd):/build_dir buildworker_i686 /bin/bash
+
+FROM quay.io/pypa/manylinux_2_28_i686@sha256:817099eabdaf534fd802079ed185b62b97f1fc5e7027db9a14fd7540931819b9
+WORKDIR /root
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN yum -y update
+RUN yum install -y \
+    wget patch gdb vim perl texinfo \
+    zlib-devel glibc-devel \
+    libX11-devel libXt-devel libXft-devel tk-devel gdbm-devel \
+    xz-devel bzip2-devel \
+    openssl3-devel \
+    gc-devel \
+    ncurses-devel \
+    libunwind-devel \
+    perl-IPC-Cmd perl-Digest-SHA
+
+RUN yum clean packages
+
+# prefer our libraries in /usr/local/lib (for sqlite, libexpat, libffi built from source)
+ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+# sqlite: yum provides 3.26.0 which is too old; build 3.47.2 from source
+ADD install_sqlite.sh /root/install_sqlite.sh
+RUN sh /root/install_sqlite.sh m32 2>&1 | tee /root/install_sqlite.log
+
+# libexpat and libffi are baked into PyPy; use latest versions
+ADD install_libexpat.sh /root/install_libexpat.sh
+RUN sh /root/install_libexpat.sh m32 2>&1 | tee /root/install_libexpat.log
+
+ADD install_libffi.sh /root/install_libffi.sh
+RUN sh /root/install_libffi.sh m32 2>&1 | tee /root/install_libffi.log
+
+# get a pypy for translation and running tests
+RUN wget -q https://downloads.python.org/pypy/pypy2.7-v7.3.22-linux32.tar.bz2 -O pypy2.7.tar.bz2
+RUN echo "3512d44a9005b52611ad2d84e63c575c8b592fb1dd1a708a00f787b46e6ee07b  pypy2.7.tar.bz2" | sha256sum -c -
+RUN tar -C /opt -xj < pypy2.7.tar.bz2 && rm pypy2.7.tar.bz2
+RUN ln -s /opt/pypy2.7-v7.3.22-linux32/bin/pypy /usr/local/bin/pypy
+RUN ln -s /opt/pypy2.7-v7.3.22-linux32/bin/pypy /usr/local/bin/python
+RUN pypy -mensurepip
+RUN pypy -mpip install --upgrade pip==20.3.4
+RUN pypy -mpip install --upgrade setuptools wheel
+ADD requirements.txt /root/requirements.txt
+RUN pypy -mpip install --require-hashes -r /root/requirements.txt
+
+# Define a user
+ARG BUILDWORKER_UID=1001
+ARG PARALLEL_BUILDS=4
+RUN adduser buildworker --uid=$BUILDWORKER_UID
+RUN echo parallel_runs=$PARALLEL_BUILDS > /home/buildworker/machine_cfg.py
+ENV PYPY_LOCALBASE=/usr/local
+USER buildworker
