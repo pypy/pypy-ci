@@ -45,6 +45,7 @@ RUN wget -q https://downloads.python.org/pypy/pypy2.7-v7.3.22-linux64.tar.bz2 -O
 RUN echo "c47a4030542cbd34d0cb673a0de1956c94c1ebe6c6b094f2ae6a167c55375f68  pypy2.7.tar.bz2" | sha256sum -c -
 RUN tar -C /opt -xj < pypy2.7.tar.bz2 && rm pypy2.7.tar.bz2
 RUN ln -s /opt/pypy2.7-v7.3.22-linux64/bin/pypy /usr/local/bin/pypy
+RUN ln -s /opt/pypy2.7-v7.3.22-linux64/bin/pypy /usr/local/bin/python
 RUN pypy -mensurepip
 RUN pypy -mpip install --upgrade pip==20.3.4
 RUN pypy -mpip install --upgrade setuptools wheel
