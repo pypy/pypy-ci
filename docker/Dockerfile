@@ -18,7 +18,6 @@ RUN yum install -y \
     zlib-devel glibc-devel \
     libX11-devel libXt-devel libXft-devel tk-devel gdbm-devel \
     xz-devel bzip2-devel \
-    openssl3-devel \
     gc-devel \
     ncurses-devel \
     libunwind-devel \
@@ -39,6 +38,9 @@ RUN sh /root/install_libexpat.sh 2>&1 | tee /root/install_libexpat.log
 
 ADD install_libffi.sh /root/install_libffi.sh
 RUN sh /root/install_libffi.sh 2>&1 | tee /root/install_libffi.log
+
+ADD install_openssl.sh /root/install_openssl.sh
+RUN sh /root/install_openssl.sh 2>&1 | tee /root/install_openssl.log
 
 # get a pypy for translation and running tests
 RUN wget -q https://downloads.python.org/pypy/pypy2.7-v7.3.22-linux64.tar.bz2 -O pypy2.7.tar.bz2
