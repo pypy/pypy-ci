@@ -6,6 +6,10 @@ on:
     paths:
       - 'docker/**'
       - '.github/workflows/docker-build.yml'
+  pull_request:
+    paths:
+      - 'docker/**'
+      - '.github/workflows/docker-build.yml'
   workflow_dispatch:
 
 permissions:
@@ -78,7 +82,7 @@ jobs:
         with:
           context: docker
           file: docker/Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -87,6 +91,7 @@ jobs:
           sbom: true
 
       - name: Attest build provenance
+        if: github.event_name != 'pull_request'
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ghcr.io/${{ github.repository_owner }}/buildworker_x86_64
@@ -129,7 +134,7 @@ jobs:
           context: docker
           file: docker/Dockerfile.i686
           platforms: linux/386
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -138,6 +143,7 @@ jobs:
           sbom: true
 
       - name: Attest build provenance
+        if: github.event_name != 'pull_request'
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ghcr.io/${{ github.repository_owner }}/buildworker_i686
@@ -176,7 +182,7 @@ jobs:
         with:
           context: docker
           file: docker/Dockerfile.aarch64
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -185,6 +191,7 @@ jobs:
           sbom: true
 
       - name: Attest build provenance
+        if: github.event_name != 'pull_request'
         uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ghcr.io/${{ github.repository_owner }}/buildworker_aarch64
