@@ -1,4 +1,4 @@
-name: ${{ github.event_name == 'pull_request' && 'Build Docker images' || 'Build and push Docker images' }}
+name: Build Docker images
 
 on:
   push:
