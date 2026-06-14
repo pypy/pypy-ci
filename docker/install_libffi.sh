@@ -12,9 +12,9 @@ rm libffi-${LIBFFI_VERSION}.tar.gz
 pushd libffi-${LIBFFI_VERSION}
 STACK_PROTECTOR_FLAGS="-fstack-protector-strong"
 if [ "$1" == "m32" ]; then
-  setarch i386 ./configure --prefix=/usr/local CFLAGS="-m32 -g -O2 $STACK_PROTECTOR_FLAGS -Wformat -Werror=format-security"
+  setarch i386 ./configure --prefix=/usr/local --libdir=/usr/local/lib CFLAGS="-m32 -g -O2 $STACK_PROTECTOR_FLAGS -Wformat -Werror=format-security"
 else
-  ./configure --prefix=/usr/local CFLAGS="-g -O2 $STACK_PROTECTOR_FLAGS -fPIC -Wformat -Werror=format-security"
+  ./configure --prefix=/usr/local --libdir=/usr/local/lib CFLAGS="-g -O2 $STACK_PROTECTOR_FLAGS -fPIC -Wformat -Werror=format-security"
 fi
 make install
 popd
