@@ -53,6 +53,9 @@ RUN pypy -mpip install --upgrade setuptools wheel
 ADD requirements.txt /root/requirements.txt
 RUN pypy -mpip install --require-hashes -r /root/requirements.txt
 
+# Refresh the dynamic linker cache so from-source libs are discoverable at runtime
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/usr-local.conf && ldconfig
+
 # Define a user
 ARG BUILDWORKER_UID=1001
 ARG PARALLEL_BUILDS=4
