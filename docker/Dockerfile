@@ -21,6 +21,7 @@ RUN yum install -y \
     gc-devel \
     ncurses-devel \
     libunwind-devel \
+    rust cargo \
     perl-IPC-Cmd perl-Digest-SHA
 
 RUN yum clean packages
