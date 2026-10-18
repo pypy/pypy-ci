@@ -22,6 +22,8 @@ under `docker/` change.
   installed into PyPy with pinned hashes (`docker/requirements.txt`).
 - **sqlite 3.53.x, libexpat 2.8.x, libffi 3.5.x, openssl 3.0.x** — built from source
   at specific versions because they are baked into the PyPy binary at translation time.
+- **zlib-ng 2.3.x** — built from source in zlib-compat mode and installed to `/usr/local`,
+  replacing the system zlib (same API/ABI, SIMD-accelerated) for PyPy's `zlib` module.
 - **gc, ncurses, libunwind, bzip2** — installed via yum from the AlmaLinux 8 repos.
 
 ### Build locally
@@ -47,6 +49,9 @@ in `docker/install_pypy.sh`. Checksums are at <https://pypy.org/checksums>.
 variables in `docker/install_libexpat.sh` / `docker/install_libffi.sh`.
 
 **sqlite** — update `SQLITE_VERSION` and `SQLITE_SHA3` in `docker/install_sqlite.sh`.
+
+**zlib-ng** — update `ZLIB_NG_VERSION` and `ZLIB_NG_SHA256` in `docker/install_zlib_ng.sh`
+(sha256 of the GitHub source tarball `archive/refs/tags/<version>.tar.gz`).
 
 **Python test dependencies** — regenerate `docker/requirements.txt`:
 

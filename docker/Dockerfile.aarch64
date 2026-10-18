@@ -15,7 +15,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN yum -y update
 RUN yum install -y \
     wget patch gdb vim perl texinfo \
-    zlib-devel glibc-devel \
+    glibc-devel \
     libX11-devel libXt-devel libXft-devel tk-devel gdbm-devel \
     xz-devel bzip2-devel \
     gc-devel \
@@ -39,6 +39,10 @@ RUN sh /root/install_libexpat.sh 2>&1 | tee /root/install_libexpat.log
 
 ADD install_libffi.sh /root/install_libffi.sh
 RUN sh /root/install_libffi.sh 2>&1 | tee /root/install_libffi.log
+
+# zlib-ng in zlib-compat mode replaces the system zlib (also baked into PyPy)
+ADD install_zlib_ng.sh /root/install_zlib_ng.sh
+RUN sh /root/install_zlib_ng.sh 2>&1 | tee /root/install_zlib_ng.log
 
 ADD install_openssl.sh /root/install_openssl.sh
 RUN sh /root/install_openssl.sh 2>&1 | tee /root/install_openssl.log
