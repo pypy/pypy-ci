@@ -21,7 +21,10 @@ else
   CFLAGS="-O2 -fPIC" ./configure ${CONFIGURE_PRE}
 fi
 make -j4
-make test
+# 'make test' also builds test/gh1235.c, which fails to compile on 32-bit in
+# zlib-compat mode (z_size_t* vs unsigned long*; fixed upstream after 2.3.3).
+# Run the actual zlib test suites (static + shared) directly instead.
+make -C test teststatic testshared
 make install
 
 popd
