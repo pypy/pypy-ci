@@ -43,6 +43,9 @@ RUN sh /root/install_libffi.sh 2>&1 | tee /root/install_libffi.log
 ADD install_openssl.sh /root/install_openssl.sh
 RUN sh /root/install_openssl.sh 2>&1 | tee /root/install_openssl.log
 
+ADD install_bzip2.sh /root/install_bzip2.sh
+RUN sh /root/install_bzip2.sh 2>&1 | tee /root/install_bzip2.log
+
 # get a pypy for translation and running tests
 ADD install_pypy.sh /root/install_pypy.sh
 RUN sh /root/install_pypy.sh aarch64 2>&1 | tee /root/install_pypy.log
